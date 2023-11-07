@@ -1,0 +1,23 @@
+version: "3.5"
+
+services:
+  vm:
+    image: vm:1.0
+    container_name: vm
+    # privileged: true
+    working_dir: /www
+    entrypoint: ["/root/start.sh"]
+    volumes:
+      - ./data/vm/wwwroot:/www/wwwroot:rw
+      - ./data/log/vm:/var/log/:rw
+      - ./storage:/storage:ro
+    restart: always
+    ports:
+      - 8000:80
+      - 8044:443
+      - 8700:8700
+    tty: true
+
+networks:
+  vpcbr:
+    driver: bridge
