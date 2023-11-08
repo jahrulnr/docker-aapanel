@@ -1,3 +1,4 @@
 #!/bin/bash
 
-exec /etc/init.d/bt 3
+# Start supervisord and services
+/www/server/panel/pyenv/bin/supervisord -n -c /etc/supervisord.conf

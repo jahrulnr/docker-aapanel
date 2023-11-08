@@ -4,9 +4,8 @@ services:
   vm:
     image: vm:1.0
     container_name: vm
-    # privileged: true
     working_dir: /www
-    entrypoint: ["/root/start.sh"]
+    command: ["/bin/sh", "/root/start.sh"]
     volumes:
       - ./data/vm/wwwroot:/www/wwwroot:rw
       - ./data/log/vm:/var/log/:rw
@@ -18,6 +17,6 @@ services:
       - 8700:8700
     tty: true
 
-networks:
-  vpcbr:
-    driver: bridge
+# networks:
+#   vpcbr:
+#     driver: bridge
