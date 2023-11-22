@@ -6,7 +6,7 @@ ARG default_pass="_admin"
 ARG default_port="8700"
 
 RUN rpmkeys --import file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
-RUN yum -y install curl wget nmap telnet net-tools vim git
+RUN yum -y install curl wget nmap telnet net-tools vim git top
 
 WORKDIR /root/
 COPY ./install.sh ./
@@ -24,5 +24,4 @@ COPY ./supervisord.conf /etc/supervisord.conf
 COPY ./start.sh ./
 RUN chmod +x start.sh
 
-# ENTRYPOINT ["/bin/bash", "/root/start.sh"]
-# CMD ["/etc/init.d/bt", "3"]
+CMD ["/bin/sh", "/root/start.sh"]

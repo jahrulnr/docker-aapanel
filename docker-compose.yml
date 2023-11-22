@@ -12,11 +12,12 @@ services:
       - ./storage:/storage:ro
     restart: always
     ports:
-      - 8000:80
-      - 8044:443
-      - 8700:8700
+      - "127.0.0.1:8022:22"
+      - "127.0.0.1:8080:80"
+      - "127.0.0.1:8443:443"
+      - "127.0.0.1:8700:8700"
     tty: true
 
-# networks:
-#   vpcbr:
-#     driver: bridge
+networks:
+  vm-network:
+    driver: bridge
