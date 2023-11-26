@@ -50,6 +50,8 @@ services:
     image: redis:latest
     container_name: vm-redis
     restart: always
+    privileged: true
+    tty: true
     expose:
       - 6379/tcp
     command: redis-server --save 20 1 --loglevel warning --requirepass bangunsoft
