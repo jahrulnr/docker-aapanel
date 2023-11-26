@@ -11,9 +11,11 @@ services:
       - ./data/vm/backup:/www/backup:rw
       - ./data/vm/server:/www/server:rw
       - ./data/vm/wwwroot:/www/wwwroot:rw
+#      - ./data/vm/init.d:/etc/init.d:rw
       - ./data/system_log:/var/log/:rw
       - ./data/vm_log:/www/wwwlogs:rw
       - ./storage:/storage:ro
+      - /var/run/docker.sock:/var/run/docker.sock
     restart: always
     ports:
       - "127.0.0.1:8022:22"
@@ -25,6 +27,36 @@ services:
     mem_limit: 4G
     memswap_limit: 8G
     mem_swappiness: 40
+    networks:
+      - aapanel
+
+  vm-mysql:
+    image: mariadb:10.11.5
+    container_name: vm-mariadb
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: bangunsoft
+    expose:
+      - 3306/tcp
+    volumes:
+      - ./data/mysql/:/var/lib/mysql/:rw
+      - ./data/log/mysql:/var/log/mysql:rw
+    cpus: 0.5
+    mem_limit: 2G
+    networks:
+      - aapanel
+
+  vm-redis:
+    image: redis:latest
+    container_name: vm-redis
+    restart: always
+    expose:
+      - 6379/tcp
+    command: redis-server --save 20 1 --loglevel warning --requirepass bangunsoft
+    volumes: 
+      - ./data/redis:/data:rw
+    cpus: 0.2
+    mem_limit: 256M
     networks:
       - aapanel
 
