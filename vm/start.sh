@@ -5,6 +5,8 @@ if [ -d "/www/server-base" ] && [ ! -d /www/server/panel ]; then
     rm -rf /www/server/*
     yes | cp -rf /www/server-base/* /www/server/
     rm -rf /www/server-base
+
+    chown -R www:www /www
 fi
 
 # Start supervisord and services
