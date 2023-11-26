@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Move instalation to volume
-if [ -d "/www/server-base" ]; then
-    rm -r /www/server/*
+if [ -d "/www/server-base" ] && [ ! -d /www/server/panel ]; then
+    rm -rf /www/server/*
     yes | cp -rf /www/server-base/* /www/server/
-    rm -r /www/server-base
+    rm -rf /www/server-base
 fi
 
 # Start supervisord and services
