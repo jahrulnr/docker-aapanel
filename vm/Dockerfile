@@ -1,4 +1,4 @@
-FROM centos:centos7.9.2009
+FROM centos:centos7
 
 ARG auth_path="login"
 ARG default_user="_admin"
@@ -23,7 +23,6 @@ RUN echo "/${auth_path}" > "/www/server/panel/data/admin_path.pl" && \
 RUN /www/server/panel/pyenv/bin/pip install supervisor git+https://github.com/coderanger/supervisor-stdout
 
 RUN sh /www/server/panel/install/install_soft.sh 1 install nginx "1.24"
-RUN sh /www/server/panel/install/install_soft.sh 1 install php "80"
 RUN sh /www/server/panel/install/install_soft.sh 1 install php "81"
 
 RUN yes | cp -rf /etc/init.d /tmp/init.d
