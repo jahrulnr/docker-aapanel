@@ -18,5 +18,7 @@ if [ -d "/www/server-base" ]; then
     rm -rf /www/server-base
 fi
 
+service firewalld start
+
 # Start supervisord and services
 /www/server/panel/pyenv/bin/supervisord -n -c /etc/supervisord.conf

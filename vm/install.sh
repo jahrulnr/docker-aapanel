@@ -777,8 +777,8 @@ Set_Firewall() {
             [ "${AliyunCheck}" ] && return
             yum install firewalld -y
             [ "${Centos8Check}" ] && yum reinstall python3-six -y
-            systemctl enable firewalld
-            systemctl start firewalld
+            # systemctl enable firewalld
+            service firewalld start
             firewall-cmd --set-default-zone=public >/dev/null 2>&1
             firewall-cmd --permanent --zone=public --add-port=20/tcp >/dev/null 2>&1
             firewall-cmd --permanent --zone=public --add-port=21/tcp >/dev/null 2>&1
