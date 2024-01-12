@@ -1,12 +1,25 @@
-FROM centos:centos7
+FROM centos:7
 
 ARG auth_path="login"
 ARG default_user="_admin"
 ARG default_pass="_admin"
 ARG default_port="8700"
+ENV TZ=Asia/Jakarta
+
+# enable systemctl & service command
+COPY systemctl.py /usr/bin/systemctl
+RUN chmod a+x /usr/bin/systemctl
+RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == systemd-tmpfiles-setup.service ] || rm -f $i; done); \
+    rm -f /lib/systemd/system/multi-user.target.wants/*; \
+    rm -f /etc/systemd/system/*.wants/*; \
+    rm -f /lib/systemd/system/local-fs.target.wants/*; \
+    rm -f /lib/systemd/system/sockets.target.wants/*udev*; \
+    rm -f /lib/systemd/system/sockets.target.wants/*initctl*; \
+    rm -f /lib/systemd/system/basic.target.wants/*; \
+    rm -f /lib/systemd/system/anaconda.target.wants/*;
 
 RUN rpmkeys --import file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
-RUN yum -y install curl wget nmap telnet net-tools vim git top openssh-server cmake
+RUN yum -y install initscripts curl wget nmap telnet net-tools vim git top openssh-server cmake
 RUN ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key -N ''
 RUN ssh-keygen -t rsa -f /etc/ssh/ssh_host_dsa_key -N ''
 RUN ssh-keygen -t rsa -f /etc/ssh/ssh_host_ed25519_key -N ''
@@ -24,30 +37,23 @@ RUN /www/server/panel/pyenv/bin/pip install supervisor git+https://github.com/co
 
 RUN sh /www/server/panel/install/install_soft.sh 1 install nginx "1.24"
 RUN sh /www/server/panel/install/install_soft.sh 1 install php "81"
+RUN /www/server/panel/pyenv/bin/pip cache purge
 
-RUN yes | cp -rf /etc/init.d /tmp/init.d
-RUN yes | cp -rf /www/server /www/server-base
-RUN echo 'export PATH="$PATH:/www/server/panel/pyenv/bin"' >> ~/.bashrc
+RUN yes | /usr/bin/mv -f /www/server /www/server-base
+ENV PATH="$PATH:/www/server/panel/pyenv/bin"
 COPY ./supervisord.conf /etc/supervisord.conf
 
-#RUN adduser --system --group root www
 RUN echo "www:${default_pass}" | chpasswd
-#RUN sed -i "s/::\/home\/www/:root:\/www/" /etc/passwd
 RUN sed -i "s/\/www:\/sbin\/nologin/\/www:\/bin\/bash/" /etc/passwd
+RUN yum-complete-transaction --cleanup-only
+RUN yum clean all
 
 COPY ./start.sh ./
 RUN chmod +x start.sh
-
-RUN yum clean packages
-RUN yum clean metadata
-RUN yum clean headers
-RUN yum clean all
-
 VOLUME ["/www/backup"]
 VOLUME ["/www/server"]
 VOLUME ["/www/wwwroot"]
-VOLUME ["/var/log/"]
 VOLUME ["/www/wwwlogs"]
-VOLUME ["/storage"]
 
-CMD ["/bin/sh", "/root/start.sh"]
+ENTRYPOINT ["/usr/sbin/init" ]
+CMD ["/root/start.sh"]
