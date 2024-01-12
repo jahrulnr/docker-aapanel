@@ -6,16 +6,12 @@ services:
     container_name: vm
     privileged: true
     working_dir: /www
-    command: ["/bin/sh", "/root/start.sh"]
     volumes:
       - ./data/vm/backup:/www/backup:rw
       - ./data/vm/server:/www/server:rw
       - ./data/vm/wwwroot:/www/wwwroot:rw
-#      - ./data/vm/init.d:/etc/init.d:rw
       - ./data/system_log:/var/log/:rw
       - ./data/vm_log:/www/wwwlogs:rw
-      - ./storage:/storage:ro
-      - /var/run/docker.sock:/var/run/docker.sock
     restart: always
     ports:
       - "127.0.0.1:8022:22"

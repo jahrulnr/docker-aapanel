@@ -1,14 +1,9 @@
 #!/bin/bash
 
-# Move init.d from docker to volume
-if [ ! -f /etc/init.d/bt ]; then
-   yes | cp -rf /tmp/init.d/* /etc/init.d/ 
-fi
-
 # Move instalation to volume
 if [ -d "/www/server-base" ] && [ ! -d /www/server/panel ]; then
-    rm -rf /www/server/*
-    yes | cp -rf /www/server-base/* /www/server/
+    mkdir -p /www/server
+    yes | /usr/bin/mv -fv /www/server-base/* /www/server/
 
     chown -R root:root /www/server
     chown -R www:www /www/wwwroot
