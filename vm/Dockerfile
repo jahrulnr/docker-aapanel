@@ -38,6 +38,11 @@ RUN sed -i "s/\/www:\/sbin\/nologin/\/www:\/bin\/bash/" /etc/passwd
 COPY ./start.sh ./
 RUN chmod +x start.sh
 
+RUN yum clean packages
+RUN yum clean metadata
+RUN yum clean headers
+RUN yum clean all
+
 VOLUME ["./data/vm/backup", "/www/backup"]
 VOLUME ["./data/vm/server", "/www/server"]
 VOLUME ["./data/vm/wwwroot", "/www/wwwroot"]
