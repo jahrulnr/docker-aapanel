@@ -43,11 +43,11 @@ RUN yum clean metadata
 RUN yum clean headers
 RUN yum clean all
 
-VOLUME ["./data/vm/backup", "/www/backup"]
-VOLUME ["./data/vm/server", "/www/server"]
-VOLUME ["./data/vm/wwwroot", "/www/wwwroot"]
-VOLUME ["./data/system_log", "/var/log/"]
-VOLUME ["./data/vm_log", "/www/wwwlogs"]
-VOLUME ["./storage", "/storage"]
+VOLUME ["/www/backup"]
+VOLUME ["/www/server"]
+VOLUME ["/www/wwwroot"]
+VOLUME ["/var/log/"]
+VOLUME ["/www/wwwlogs"]
+VOLUME ["/storage"]
 
 CMD ["/bin/sh", "/root/start.sh"]
