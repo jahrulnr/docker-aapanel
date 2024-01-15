@@ -1,4 +1,6 @@
-#!/bin/bash
+#!/bin/sh
+
+# /usr/sbin/init &
 
 # Move instalation to volume
 if [ -d "/www/server-base" ] && [ ! -d /www/server/panel ]; then
@@ -13,7 +15,6 @@ if [ -d "/www/server-base" ]; then
     rm -rf /www/server-base
 fi
 
-service firewalld start
-
-# Start supervisord and services
+# Start supervisord and aapanel
+/etc/init.d/bt restart
 /www/server/panel/pyenv/bin/supervisord -n -c /etc/supervisord.conf
