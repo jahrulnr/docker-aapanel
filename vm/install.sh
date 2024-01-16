@@ -846,10 +846,10 @@ Install_Main() {
     Get_Pack_Manager
     get_node_url
 
-    MEM_TOTAL=$(free -g | grep Mem | awk '{print $2}')
-    if [ "${MEM_TOTAL}" -le "1" ]; then
-        Auto_Swap
-    fi
+    # MEM_TOTAL=$(free -g | grep Mem | awk '{print $2}')
+    # if [ "${MEM_TOTAL}" -le "1" ]; then
+    #     Auto_Swap
+    # fi
 
     if [ "${PM}" = "yum" ]; then
         Install_RPM_Pack
@@ -862,7 +862,7 @@ Install_Main() {
 
     Set_Bt_Panel
     Service_Add
-    Set_Firewall
+    # Set_Firewall
 
     Get_Ip_Address
     Setup_Count ${IDC_CODE}

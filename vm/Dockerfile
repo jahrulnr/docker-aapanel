@@ -5,15 +5,10 @@ ARG default_user="_admin"
 ARG default_pass="_admin"
 ARG default_port="8700"
 ENV TZ=Asia/Jakarta
-ENV PATH="$PATH:/www/server/panel/pyenv/bin"
 
-COPY ./systemctl.py /usr/bin/system
-COPY ./supervisord.conf /etc/supervisord.confctl
-COPY ./install.sh /root/
-COPY ./start.sh /root/
-RUN chmod a+x /usr/bin/systemctl && chmod +x start.sh \
-    && rpmkeys --import file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7 \
-    && yum -y install initscripts curl wget nmap telnet net-tools vim git top openssh-server cmake \
+
+RUN rpmkeys --import file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7 \
+    && yum -y install initscripts nmap telnet net-tools vim git top openssh-server \
     && yum-complete-transaction --cleanup-only \
     && yum clean all && rm -rf /var/cache \
     && ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key -N '' \
@@ -28,6 +23,7 @@ RUN chmod a+x /usr/bin/systemctl && chmod +x start.sh \
     rm -f /lib/systemd/system/basic.target.wants/*; \
     rm -f /lib/systemd/system/anaconda.target.wants/*;
 
+COPY ./install.sh /root/
 RUN chmod +x /root/install.sh && bash /root/install.sh aapanel \
     && echo "/${auth_path}" > "/www/server/panel/data/admin_path.pl" \
     && yes ${default_user} | /etc/init.d/bt 6 \
@@ -44,11 +40,17 @@ RUN chmod +x /root/install.sh && bash /root/install.sh aapanel \
     && yes | /usr/bin/mv -f /www/server /www/server-base \
     && echo "www:${default_pass}" | chpasswd \
     && sed -i "s/\/www:\/sbin\/nologin/\/www:\/bin\/bash/" /etc/passwd
-    
+
+ENV PATH="$PATH:/www/server/panel/pyenv/bin"
+COPY ./systemctl.py /usr/bin/systemctl
+COPY ./start.sh /root/
+COPY ./supervisord.conf /etc/supervisord.conf
+RUN chmod a+x /usr/bin/systemctl
+RUN chmod +x /root/start.sh
+
 VOLUME ["/www/backup"]
 VOLUME ["/www/server"]
 VOLUME ["/www/wwwroot"]
 VOLUME ["/www/wwwlogs"]
 
-ENTRYPOINT ["/usr/sbin/init" ]
-CMD ["/root/start.sh"]
+CMD /root/start.sh
